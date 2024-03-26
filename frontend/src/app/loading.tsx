@@ -1,5 +1,9 @@
+import {Spinner} from "@nextui-org/react";
+
 export default function Loading() {
-  return (
-    <div className="bg-red-500 text-center font-bold w-full z-50">LOADING ...</div>
-  );
+    return (
+        <div className="text-center w-full z-50 p-10">
+            <Spinner size="lg" color="primary"/>
+        </div>
+    );
 }

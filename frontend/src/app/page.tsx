@@ -1,38 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import {Suspense, useEffect, useState} from "react";
+import ResponseDetails from "@/components/response-details";
 import ResponseStatus from "@/components/response-status";
 import RequestForm from "@/components/request-form";
 import Share from "@/components/share";
-import Details from "@/components/details";
 import TimingAnalysisPanel from "@/components/timing-analysis-panel";
-import { sendRequest } from "@/actions/api-actions";
+import {getRequest, sendRequest} from "@/actions/api-actions";
 
 export default function Home() {
 
+    const [id, setId] = useState()
     const [status, setStatus] = useState()
     const [details, setDetails] = useState()
-    const [shareLink, setShareLink] = useState()
-    const [id, setId] = useState()
+    const [errors, setErrors] = useState()
 
-    const sendURL = async (formData: FormData) => {
-        const res = await sendRequest(formData)
-        if (res) {
-            setId(res.id)
-            setStatus(res.status)
-            setDetails({url_info: res.url_info, responses: res.responses})
-            setShareLink(`${window.location.href}${res.id}`)
+    async function sendURL(formData: FormData) {
+        const json_res = await sendRequest(formData)
+        // Checking response from the ID field
+        if (json_res.id) {
+            setId(json_res.id)
+            setStatus(json_res.status)
+            setDetails({url_info: json_res.url_info, responses: json_res.responses})
+        } else {
+            setErrors(json_res)
+            setTimeout(() => setErrors(undefined), 5000)
         }
     }
 
     return (
         <main className="flex flex-col h-[calc(100dvh)] items-center px-[calc(10dvw)] pt-[calc(5dvh)] pb-[calc(15dvh)]
               gap-y-[calc(3dvh)]">
-            <RequestForm formAction={sendURL}/>
-            { status && <ResponseStatus data={status}/> }
-            { details && <Details data={details}/> }
-            { shareLink && <Share data={shareLink}/> }
-            { id && <TimingAnalysisPanel id={id}/> }
+            <RequestForm action={sendURL}/>
+            {errors && Object.keys(errors).map((field) => (
+                <div key={field} className="bg-red-200 text-red-900 p-2 rounded-md order-3">{errors[field]}</div>
+            ))}
+            {status && <ResponseStatus data={status}/>}
+            {details && <ResponseDetails data={details}/>}
+            {id && <Share id={id}/>}
+            {/*{id && <TimingAnalysisPanel id={id}/>}*/}
         </main>
     );
 }
