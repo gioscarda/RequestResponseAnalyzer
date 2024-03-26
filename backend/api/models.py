@@ -21,9 +21,9 @@ class Status(models.Model):
             return 'Everything is fine!'
         elif self.code in range(300, 400):
             return 'Your request has been redirected!'
-        elif self.code in range(400, 499):
+        elif self.code in range(400, 500):
             return 'Some error occurred on the client!'
-        elif self.code in range(500, 599):
+        elif self.code in range(500, 600):
             return 'Some error occurred on the server!'
         else:
             return "Unknown status code"
@@ -60,3 +60,4 @@ class TimingAnalysisData(models.Model):
     """ Model for storing Timing analysis data """
     request = models.OneToOneField('Request', on_delete=models.CASCADE, related_name='timing_analysis_data')
     data = models.JSONField(null=True)
+    completed = models.BooleanField(default=False)

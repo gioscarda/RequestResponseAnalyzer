@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from django.db import transaction
 
-import requests
+from requests import request
 from datetime import datetime
 from http.client import HTTPConnection
 from tld import get_tld
@@ -46,10 +47,12 @@ class RequestSerializer(serializers.ModelSerializer):
         model = Request
         fields = '__all__'
 
+    @transaction.atomic()
     def create(self, validated_data):
         url = validated_data['url']
         # Send the HTTP request
-        res = getattr(requests, validated_data['method'].lower())(
+        res = request(
+            method=validated_data['method'],
             url=url,
             timeout=30
         )
