@@ -54,7 +54,7 @@ class RequestSerializer(serializers.ModelSerializer):
         res = request(
             method=validated_data['method'],
             url=url,
-            timeout=30
+            timeout=60
         )
         instance = super(RequestSerializer, self).create(validated_data)
         # Handle response for details component

@@ -137,12 +137,15 @@ CORS_ALLOWED_ORIGINS = [
     "https://127.0.0.1:3000",
 ]
 
-X_FRAME_OPTIONS = "SAMEORIGIN"
+X_FRAME_OPTIONS = "DENY"
 
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:3000",
     "https://0.0.0.0:3000",
     "https://127.0.0.1:3000",
 ]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 GOOGLE_API_KEY = env.str('GOOGLE_API_KEY', default='my-google-key')
