@@ -13,10 +13,10 @@ export default function Share({id=''}) {
     }
     useEffect(() => {
         setLink(`${window.location.href}${id}`)
-    }, []);
+    }, [id]);
 
     return (
-        <div className={`text-center order-4`}>
+        <div className="text-center order-4 text-wrap w-[calc(80dvw)]">
             <h1 className="text-xl mb-3">SHARE</h1>
             <CopyToClipboard text={link} onCopy={copy}>
                 <span className="bg-neutral-200 rounded-2xl px-2 py-1">{link}</span>

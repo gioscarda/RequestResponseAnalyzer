@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { getTimingData } from "@/actions/api-actions";
+import {useEffect, useState, Suspense} from "react";
+import {getTimingData} from "@/actions/api-actions";
 import Speedometer from "@/components/speedometer";
+import {Spinner} from "@nextui-org/react";
 
 export default function TimingAnalysisPanel({id}) {
 
@@ -11,11 +12,16 @@ export default function TimingAnalysisPanel({id}) {
     const [previousTouch, setPreviousTouch] = useState();
     const [height, setHeight] = useState(10);
     const [overflow, setOverflow] = useState('overflow-y-hidden');
-    const [metrics, setMetrics] = useState({})
+    const [metrics, setMetrics] = useState()
+    const [errors, setErrors] = useState()
 
     const fetchRequest = async () => {
         const res = await getTimingData(id)
-        setMetrics(res)
+        if (res.detail) {
+            setErrors(res)
+        } else {
+            setMetrics(res)
+        }
     }
 
     useEffect(() => {
@@ -74,34 +80,63 @@ export default function TimingAnalysisPanel({id}) {
     }
 
     return (
-        <div className={`text-center absolute bottom-0 w-full max-h-[calc(98dvh)] min-h-[calc(10dvh)] md:hidden 
-           rounded-t-xl shadow-[gray_0px_0px_5px_0px] bg-white ${overflow}`} style={{height: `calc(${height}dvh)`}}
+        <div className={`w-full text-center absolute bottom-0 max-h-[calc(98dvh)] min-h-[calc(10dvh)] bg-white
+             rounded-t-xl shadow-[gray_0px_0px_5px_0px] ${overflow}`} style={{height: `calc(${height}dvh)`}}
              onScroll={handleScroll} onTouchEndCapture={draggingStop} onTouchStartCapture={draggingStart}
              onTouchMove={handleMove}>
-            <div className="z-10 fixed w-full bg-white text-left px-5 text-neutral-400 rounded-t-xl font-bold text-xl pt-7">
+            <div className="z-10 fixed w-full bg-white text-left text-neutral-400 rounded-t-xl font-bold text-xl py-7
+                px-5">
                 Timing Analysis
             </div>
             <div className="fixed flex justify-center w-full bg-white rounded-t-xl z-20">
-                <div className="w-[40dvw] h-[7px] bg-gray-300 rounded m-2"></div>
+                <div className="w-[calc(40dvw)] h-[7px] bg-gray-300 rounded m-2"></div>
             </div>
-            <Suspense fallback={<div className="bg-red-500 h-10 w-full">Loading ...</div>}>
-                <div className="bg-white flex flex-col items-center text-center justify-center pb-5 pt-14 gap-10 mx-20">
-                    {Object.keys(metrics).map((k) => (
-                        <div className="w-full flex flex-col justify-center relative" key={k}>
-                            <div className="absolute inset-x-0 text-2xl font-medium">
-                                {metrics[k].category.toLowerCase() + '!'}
+            <div className="bg-white flex flex-col items-center text-center justify-center pb-10 pt-20 mx-5">
+                {metrics ?
+                    <>
+                        {Object.keys(metrics).length > 0 ?
+                            <>
+                                {Object.keys(metrics).map((k) => (
+                                    <div className="flex flex-col flex-nowrap my-6" key={k}>
+                                        <div className="absolute inset-x-0 text-2xl font-medium mt-28">
+                                            {metrics[k].category.toLowerCase() + '!'}
+                                        </div>
+                                        <div className="flex-auto">
+                                            <Speedometer data={metrics[k]}/>
+                                        </div>
+                                        <div className="text-neutral-300 font-bold text-2xl text-center text-wrap mx-5">
+                                            {getMetricName(k)}
+                                        </div>
+                                        <div className="text-gray-500 font-bold text-2xl text-center text-wrap mx-5">
+                                            {getMetricValue(metrics[k], k)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </>
+                            :
+                            <div className="text-amber-600 p-5">No data found</div>
+                        }
+                    </>
+                    :
+                    <>
+                        {errors ?
+                            <div className="w-[calc(80dvw)]">
+                                <div className="bg-red-200 text-red-900 p-2 rounded-md">Some errors occurred</div>
+                                {Object.keys(errors).map((field) => (
+                                    <div key={field} className="text-red-700 p-2 rounded-md break-words">
+                                        {errors[field]}</div>
+                                ))}
                             </div>
-                            <Speedometer data={metrics[k]}/>
-                            <div className="text-neutral-300 font-bold text-2xl text-center w-full">
-                                {getMetricName(k)}
+                            :
+                            <div className="w-full flex flex-col justify-center relative mt-16">
+                                <div className="absolute inset-x-0">
+                                    <Spinner size="lg" color="primary"/>
+                                </div>
                             </div>
-                            <div className="text-gray-500 font-bold text-2xl text-center w-full">
-                                {getMetricValue(metrics[k], k)}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </Suspense>
+                        }
+                    </>
+                }
+            </div>
         </div>
     );
 }

@@ -2,7 +2,8 @@ export default function ResponseDetails({data}) {
     return (
         <div className={`grid grid-flow-col auto-cols-[1fr] gap-2 text-gray-600 font-medium w-full overflow-x-scroll
          order-3`}>
-            <div className="bg-neutral-50 rounded-md min-h-[calc(40dvh)] border border-neutral-200 w-[80vw] md:w-full">
+            <div className="bg-neutral-50 rounded-md min-h-[calc(40dvh)] border border-neutral-200 w-[calc(80dvw)]
+                 md:w-full">
                 <div className="grid grid-flow-row gap-0.5">
                     <div className="pb-3 pt-1 px-2">URL INFO</div>
                     <div className="bg-neutral-200 py-1 px-2">
@@ -21,7 +22,7 @@ export default function ResponseDetails({data}) {
             </div>
             {data?.responses.sort((a, b) => b.id - a.id).map(function (response) {
                 return (
-                    <div className="rounded-md border border-neutral-200 min-h-[calc(40dvh)] w-[80vw] md:w-full"
+                    <div className="rounded-md border border-neutral-200 min-h-[calc(40dvh)] w-[calc(80dvw)] md:w-full"
                          key={response.id}>
                         <div className="grid grid-flow-row gap-0.5">
                             <div className="bg-white pt-1 px-2">RESPONSE</div>

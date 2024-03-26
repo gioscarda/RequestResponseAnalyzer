@@ -38,7 +38,8 @@ export default function Speedometer({data}) {
     }, [data]);
 
     return (
-            <GaugeComponent className="text-center w-full"
+            <GaugeComponent className="text-center p-5"
+                marginInPercent={{top: 0.02, bottom: 0.02, left: 0.2, right: 0.2}}
                 type="radial"
                 pointer={{type: "blob", animationDelay: 10}}
                 value={750}

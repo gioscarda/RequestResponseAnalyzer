@@ -1,12 +1,13 @@
 "use client";
 
-import {Suspense, useEffect, useState} from "react";
+import {useState} from "react";
 import ResponseDetails from "@/components/response-details";
 import ResponseStatus from "@/components/response-status";
 import RequestForm from "@/components/request-form";
 import Share from "@/components/share";
 import TimingAnalysisPanel from "@/components/timing-analysis-panel";
-import {getRequest, sendRequest} from "@/actions/api-actions";
+import {sendRequest} from "@/actions/api-actions";
+import {isMobileDevice} from "@/libs/device";
 
 export default function Home() {
 
@@ -14,8 +15,13 @@ export default function Home() {
     const [status, setStatus] = useState()
     const [details, setDetails] = useState()
     const [errors, setErrors] = useState()
+    const [isMobile, setIsMobile] = useState(false);
 
     async function sendURL(formData: FormData) {
+        // Check if mobile device
+        const mobile = await isMobileDevice()
+        setIsMobile(mobile)
+        // Call backend API
         const json_res = await sendRequest(formData)
         // Checking response from the ID field
         if (json_res.id) {
@@ -38,7 +44,7 @@ export default function Home() {
             {status && <ResponseStatus data={status}/>}
             {details && <ResponseDetails data={details}/>}
             {id && <Share id={id}/>}
-            {/*{id && <TimingAnalysisPanel id={id}/>}*/}
+            {id && isMobile && <TimingAnalysisPanel id={id}/>}
         </main>
     );
 }
