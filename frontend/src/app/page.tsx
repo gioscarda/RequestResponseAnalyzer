@@ -13,7 +13,7 @@ export default function Home() {
 
     const [id, setId] = useState()
     const [status, setStatus] = useState()
-    const [details, setDetails] = useState()
+    const [details, setDetails] = useState<TResponseDetails>()
     const [errors, setErrors] = useState()
     const [isMobile, setIsMobile] = useState(false);
 

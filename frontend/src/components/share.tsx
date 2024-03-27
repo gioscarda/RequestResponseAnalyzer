@@ -1,12 +1,16 @@
 "use client";
 
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import {CopyToClipboard} from "react-copy-to-clipboard";
 import {useEffect, useState} from "react";
 
-export default function Share({id=''}) {
+export default function Share({
+    id=''
+}: {
+    id?: string
+}) {
 
     const [copied, setCopied] = useState(false)
-    const [link, setLink] = useState()
+    const [link, setLink] = useState<string | undefined>()
     const copy = () => {
         setCopied(true)
         setTimeout(() => setCopied(false), 1000)

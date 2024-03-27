@@ -8,7 +8,7 @@ import {isMobileDevice} from "@/libs/device";
 export default async function ReadOnlyHome({params}: { params: { id: string } }) {
 
     // Check if mobile
-    const isMobile: boolean = await isMobileDevice();
+    const isMobile = await isMobileDevice();
 
     const res = await getRequest(params.id)
 

@@ -2,7 +2,11 @@
 
 import {useFormStatus} from 'react-dom';
 
-export default function MethodSelect({method}) {
+export default function MethodSelect({
+    method
+}: {
+    method?: string
+}) {
 
     const {pending} = useFormStatus()
 

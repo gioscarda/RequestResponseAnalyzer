@@ -2,7 +2,11 @@
 
 import {useFormStatus} from 'react-dom';
 
-export default function UrlInput({url}) {
+export default function UrlInput({
+    url,
+}: {
+    url?: string
+}) {
 
     const {pending} = useFormStatus()
 

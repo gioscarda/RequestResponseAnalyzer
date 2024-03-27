@@ -1,4 +1,4 @@
-export default function ResponseDetails({data}) {
+export default function ResponseDetails({data} : {data: TResponseDetails}) {
     return (
         <div className={`grid grid-flow-col auto-cols-[1fr] gap-2 text-gray-600 font-medium w-full overflow-x-scroll
          order-3`}>

@@ -1,18 +1,19 @@
 "use client";
 
-import {useEffect, useState, Suspense} from "react";
+import {useEffect, useState} from "react";
 import {getTimingData} from "@/actions/api-actions";
 import Speedometer from "@/components/speedometer";
 import {Spinner} from "@nextui-org/react";
+import {ScrollEvent} from "@react-types/shared";
 
-export default function TimingAnalysisPanel({id}) {
+export default function TimingAnalysisPanel({id}: {id: string}) {
 
     const [delta, setDelta] = useState(0);
     const [scrollTop, setScrollTop] = useState(0);
-    const [previousTouch, setPreviousTouch] = useState();
+    const [previousTouch, setPreviousTouch] = useState<Touch>();
     const [height, setHeight] = useState(10);
     const [overflow, setOverflow] = useState('overflow-y-hidden');
-    const [metrics, setMetrics] = useState()
+    const [metrics, setMetrics] = useState<Record<string, TMetric>>()
     const [errors, setErrors] = useState()
 
     const fetchRequest = async () => {
@@ -28,21 +29,21 @@ export default function TimingAnalysisPanel({id}) {
         fetchRequest()
     }, [id]);
 
-    const getMetricName = (name) => {
+    const getMetricName = (name: string): string => {
         return name.replaceAll("_MS", "").replaceAll("_", " ")
     }
 
-    const getMetricValue = (metric, metric_name) => {
-        let unit = ' ms';
-        const value = metric.percentile;
+    const getMetricValue = (metric: TMetric, metric_name: string): string => {
+        let unit: string = ' ms';
+        const value: number = metric.percentile;
         if (metric_name.endsWith('SCORE')) {
             unit = '';
         }
-        return String(value) + unit
+        return `${String(value)}${unit}`
     }
 
-    const handleMove = (e) => {
-        const current = e.changedTouches[0]
+    const handleMove = (e: TouchEvent): void => {
+        const current: Touch = e.changedTouches[0]
         if (current != undefined && previousTouch != undefined) {
             const delta = (previousTouch.pageY - current.pageY) / window.innerHeight * 100
             setDelta(delta)
@@ -52,10 +53,7 @@ export default function TimingAnalysisPanel({id}) {
         }
         setPreviousTouch(e.changedTouches[0])
     };
-    const handleScroll = (e) => {
-        setScrollTop(e.target.scrollTop)
-    }
-    const draggingStop = (e) => {
+    const draggingStop = (e: TouchEvent): void => {
         if (scrollTop == 0) {
             if (height >= 50 && height < 98) {
                 if (delta > 0) {
@@ -75,7 +73,10 @@ export default function TimingAnalysisPanel({id}) {
             }
         }
     }
-    const draggingStart = (e) => {
+    const handleScroll = (e: ScrollEvent): void => {
+        setScrollTop(e.target.scrollTop)
+    }
+    const draggingStart = (e: TouchEvent): void => {
         setPreviousTouch(e.changedTouches[0])
     }
 
@@ -96,7 +97,7 @@ export default function TimingAnalysisPanel({id}) {
                     <>
                         {Object.keys(metrics).length > 0 ?
                             <>
-                                {Object.keys(metrics).map((k) => (
+                                {Object.keys(metrics).map((k: string) => (
                                     <div className="flex flex-col flex-nowrap my-6" key={k}>
                                         <div className="absolute inset-x-0 text-2xl font-medium mt-28">
                                             {metrics[k].category.toLowerCase() + '!'}
@@ -122,7 +123,7 @@ export default function TimingAnalysisPanel({id}) {
                         {errors ?
                             <div className="w-[calc(80dvw)]">
                                 <div className="bg-red-200 text-red-900 p-2 rounded-md">Some errors occurred</div>
-                                {Object.keys(errors).map((field) => (
+                                {Object.keys(errors).map((field: string) => (
                                     <div key={field} className="text-red-700 p-2 rounded-md break-words">
                                         {errors[field]}</div>
                                 ))}

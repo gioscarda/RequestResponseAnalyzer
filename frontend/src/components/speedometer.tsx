@@ -5,22 +5,28 @@ import {useEffect, useState} from "react";
 
 const GaugeComponent = dynamic(() => import('react-gauge-component'), {ssr: false});
 
-export default function Speedometer({data}) {
+type TTick = {
+    value: number
+}
+type TLimit = {
+    limit: number
+}
 
-    const [subArcsLimits, setSubArcsLimits] = useState()
-    const [ticks, setTicks] = useState()
-    const [ticksValue, setTicksValue] = useState()
-    const [value, setValue] = useState()
+export default function Speedometer({data}: {data: TMetric}) {
 
-    const getTickValue = (tick) => {
-        return ticksValue[tick]
+    const [subArcsLimits, setSubArcsLimits] = useState<TLimit[]>()
+    const [ticks, setTicks] = useState<TTick[]>()
+    const [ticksValue, setTicksValue] = useState<Record<number, number>>()
+
+    const getTickValue = (tick: number): string => {
+        return ticksValue ? String(ticksValue[tick]) : ''
     }
 
     useEffect(() => {
-        let ticksValue = {}
-        let ticks = []
-        let limits = []
-        let limit = 0
+        let ticksValue: Record<number, number> = {}
+        let ticks: TTick[] = []
+        let limits: TLimit[] = []
+        let limit: number = 0
         data.distributions.map((d, i) => {
             if (d.proportion > 0) {
                 limit += d.proportion
@@ -39,7 +45,7 @@ export default function Speedometer({data}) {
 
     return (
             <GaugeComponent className="text-center p-5"
-                marginInPercent={{top: 0.02, bottom: 0.02, left: 0.2, right: 0.2}}
+                marginInPercent={{top: 0.04, bottom: 0.02, left: 0.2, right: 0.2}}
                 type="radial"
                 pointer={{type: "blob", animationDelay: 10}}
                 value={750}
