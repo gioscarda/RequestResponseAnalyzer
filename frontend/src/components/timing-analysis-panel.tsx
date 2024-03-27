@@ -27,7 +27,7 @@ export default function TimingAnalysisPanel({id}: {id: string}) {
 
     useEffect(() => {
         fetchRequest()
-    }, [id]);
+    }, []);
 
     const getMetricName = (name: string): string => {
         return name.replaceAll("_MS", "").replaceAll("_", " ")
@@ -115,7 +115,7 @@ export default function TimingAnalysisPanel({id}: {id: string}) {
                                 ))}
                             </>
                             :
-                            <div className="text-amber-600 p-5">No data found</div>
+                            <div className="text-amber-600 p-5">No data available</div>
                         }
                     </>
                     :
