@@ -131,21 +131,32 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
+DEFAULT_CORS_ALLOWED_ORIGINS = [
     "https://localhost:3000",
     "https://0.0.0.0:3000",
     "https://127.0.0.1:3000",
 ]
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=DEFAULT_CORS_ALLOWED_ORIGINS)
 
 X_FRAME_OPTIONS = "DENY"
 
-CSRF_TRUSTED_ORIGINS = [
+DEFAULT_CSRF_TRUSTED_ORIGINS = [
     "https://localhost:3000",
     "https://0.0.0.0:3000",
     "https://127.0.0.1:3000",
 ]
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=DEFAULT_CSRF_TRUSTED_ORIGINS)
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 GOOGLE_API_KEY = env.str('GOOGLE_API_KEY', default='my-google-key')
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': env.str('DEFAULT_THROTTLE_RATES', default='100/day')
+    }
+}
