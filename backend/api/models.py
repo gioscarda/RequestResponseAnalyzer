@@ -52,7 +52,7 @@ class URLInfo(models.Model):
     """ Model for storing URL data """
     request = models.OneToOneField('Request', on_delete=models.CASCADE, related_name='url_info')
     domain = models.CharField(max_length=255)
-    scheme = models.CharField(max_length=4)
+    scheme = models.CharField(max_length=10)
     path = models.CharField(max_length=255)
 
 
