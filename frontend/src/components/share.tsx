@@ -10,7 +10,7 @@ export default function Share({
 }) {
 
     const [copied, setCopied] = useState(false)
-    const [link, setLink] = useState<string | undefined>()
+    const [link, setLink] = useState('')
     const copy = () => {
         setCopied(true)
         setTimeout(() => setCopied(false), 1000)

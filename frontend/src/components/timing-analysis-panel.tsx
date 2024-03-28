@@ -1,10 +1,9 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import {useEffect, useState, UIEvent, TouchEvent, Touch} from "react";
 import {getTimingData} from "@/actions/api-actions";
 import Speedometer from "@/components/speedometer";
 import {Spinner} from "@nextui-org/react";
-import {ScrollEvent} from "@react-types/shared";
 
 export default function TimingAnalysisPanel({id}: {id: string}) {
 
@@ -73,8 +72,8 @@ export default function TimingAnalysisPanel({id}: {id: string}) {
             }
         }
     }
-    const handleScroll = (e: ScrollEvent): void => {
-        setScrollTop(e.target.scrollTop)
+    const handleScroll = (e: UIEvent): void => {
+        setScrollTop((e.target as HTMLElement)?.scrollTop)
     }
     const draggingStart = (e: TouchEvent): void => {
         setPreviousTouch(e.changedTouches[0])

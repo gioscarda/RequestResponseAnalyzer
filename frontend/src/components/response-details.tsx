@@ -16,7 +16,7 @@ export default function ResponseDetails({data} : {data: TResponseDetails}) {
                     </div>
                     <div className="bg-neutral-200 py-1 px-2">
                         <div className="font-bold">PATH</div>
-                        <div>{data?.url_info.path}</div>
+                        <div className="break-all">{data?.url_info.path}</div>
                     </div>
                 </div>
             </div>
