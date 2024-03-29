@@ -14,19 +14,22 @@ export default function TimingAnalysisPanel({id}: {id: string}) {
     const [overflow, setOverflow] = useState('overflow-y-hidden');
     const [metrics, setMetrics] = useState<Record<string, TMetric>>()
     const [errors, setErrors] = useState()
+    const [loading, setLoading] = useState(false)
 
-    const fetchRequest = async () => {
+    async function fetchRequest() {
+        setLoading(true)
         const res = await getTimingData(id)
         if (res.detail) {
             setErrors(res)
         } else {
             setMetrics(res)
         }
+        setLoading(false)
     }
 
     useEffect(() => {
         fetchRequest()
-    }, []);
+    }, [id]);
 
     const getMetricName = (name: string): string => {
         return name.replaceAll("_MS", "").replaceAll("_", " ")
@@ -92,7 +95,11 @@ export default function TimingAnalysisPanel({id}: {id: string}) {
                 <div className="w-[calc(40dvw)] h-[7px] bg-gray-300 rounded m-2"></div>
             </div>
             <div className="bg-white flex flex-col items-center text-center justify-center pb-10 pt-20 mx-5">
-                {metrics ?
+                {loading ?
+                    <div className="w-full flex flex-col justify-center relative mt-16">
+                        <Spinner size="lg" color="primary"/>
+                    </div>
+                : metrics ?
                     <>
                         {Object.keys(metrics).length > 0 ?
                             <>
@@ -117,24 +124,16 @@ export default function TimingAnalysisPanel({id}: {id: string}) {
                             <div className="text-amber-600 p-5">No data available</div>
                         }
                     </>
+                    : errors ?
+                        <div className="w-[calc(80dvw)]">
+                            <div className="bg-red-200 text-red-900 p-2 rounded-md">Some errors occurred</div>
+                            {Object.keys(errors).map((field: string) => (
+                                <div key={field} className="text-red-700 p-2 rounded-md break-words">
+                                    {errors[field]}</div>
+                            ))}
+                        </div>
                     :
-                    <>
-                        {errors ?
-                            <div className="w-[calc(80dvw)]">
-                                <div className="bg-red-200 text-red-900 p-2 rounded-md">Some errors occurred</div>
-                                {Object.keys(errors).map((field: string) => (
-                                    <div key={field} className="text-red-700 p-2 rounded-md break-words">
-                                        {errors[field]}</div>
-                                ))}
-                            </div>
-                            :
-                            <div className="w-full flex flex-col justify-center relative mt-16">
-                                <div className="absolute inset-x-0">
-                                    <Spinner size="lg" color="primary"/>
-                                </div>
-                            </div>
-                        }
-                    </>
+                    <></>
                 }
             </div>
         </div>
