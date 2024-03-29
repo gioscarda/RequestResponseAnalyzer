@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import {Providers} from "@/app/providers";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'], display: 'swap', adjustFontFallback: false})
 
 export const metadata: Metadata = {
   title: "Request/response analyzer",

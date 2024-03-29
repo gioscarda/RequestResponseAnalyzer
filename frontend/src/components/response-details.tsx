@@ -8,19 +8,19 @@ export default function ResponseDetails({data} : {data: TResponseDetails}) {
                     <div className="pb-3 pt-1 px-2">URL INFO</div>
                     <div className="bg-neutral-200 py-1 px-2">
                         <div className="font-bold">DOMAIN</div>
-                        <div>{data?.url_info.domain}</div>
+                        <div>{data?.url_info?.domain}</div>
                     </div>
                     <div className="bg-neutral-200 py-1 px-2">
                         <div className="font-bold">SCHEME</div>
-                        <div>{data?.url_info.scheme}</div>
+                        <div>{data?.url_info?.scheme}</div>
                     </div>
                     <div className="bg-neutral-200 py-1 px-2">
                         <div className="font-bold">PATH</div>
-                        <div className="break-all">{data?.url_info.path}</div>
+                        <div className="break-all">{data?.url_info?.path}</div>
                     </div>
                 </div>
             </div>
-            {data?.responses.sort((a, b) => b.id - a.id).map(function (response) {
+            {data?.responses?.sort((a, b) => b.id - a.id).map(function (response) {
                 return (
                     <div className="rounded-md border border-neutral-200 min-h-[calc(40dvh)] w-[calc(80dvw)] md:w-full"
                          key={response.id}>
