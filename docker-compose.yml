@@ -1,0 +1,76 @@
+# version: '3'
+
+services:
+
+  # Postgres DB
+  postgres_db:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - postgres/.env
+
+  # DB PgAdmin
+  pgadmin4:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin4
+    restart: always
+    ports:
+      - "8888:80"
+    env_file:
+      - postgres/.env
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres_db
+
+  # Django backend APIs
+  backend:
+    container_name: backend
+    volumes:
+      - static:/app/backend/static_root
+    env_file:
+      - backend/.env
+    build:
+      context: ./backend
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres_db
+
+  # Next frontend app
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - frontend:/app/frontend/build
+
+  # Nginx reverse proxy
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - static:/app/backend/static_root
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+
+# Volumes declaration
+volumes:
+  static:
+  frontend:
+  pgdata:
+  pgadmin-data:
