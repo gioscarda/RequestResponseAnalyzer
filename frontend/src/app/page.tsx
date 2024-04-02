@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {Suspense, useState} from "react";
 import ResponseDetails from "@/components/response-details";
 import ResponseStatus from "@/components/response-status";
 import RequestForm from "@/components/request-form";
@@ -29,7 +29,7 @@ export default function Home() {
             setStatus(json_res.status)
             setDetails({url_info: json_res.url_info, responses: json_res.responses})
         } else {
-            setErrors(json_res)
+            setErrors(json_res.errors)
             setTimeout(() => setErrors(undefined), 5000)
         }
     }

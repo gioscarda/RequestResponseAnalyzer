@@ -8,7 +8,11 @@ def handle_exception(to_be_executed):
         try:
             return to_be_executed(*args, **kwargs)
         except Exception as e:
+            try:
+                error = e.detail
+            except:
+                error = {'error': str(e)}
             return Response(
-                {'errors': {e.__class__.__name__: str(e)}}
+                {'errors': error}
             )
     return wrapper
