@@ -13,23 +13,32 @@ export default function TimingAnalysisPanel({id}: {id: string}) {
     const [height, setHeight] = useState(10);
     const [overflow, setOverflow] = useState('overflow-y-hidden');
     const [metrics, setMetrics] = useState<Record<string, TMetric>>()
-    const [errors, setErrors] = useState()
+    const [warnings, setWarnings] = useState<Record<string, string>>()
+    const [errors, setErrors] = useState<Record<string, string>>()
     const [loading, setLoading] = useState(false)
 
-    async function fetchRequest() {
+    async function fetchRequest(sleep: number) {
         setLoading(true)
-        const res = await getTimingData(id)
-        if (res.detail) {
-            setErrors(res)
-        } else {
-            setMetrics(res)
+        let res = await getTimingData(id, sleep)
+        if (res.warnings) {
+            setWarnings(res.warnings)
+        } else if (res.errors) {
+            setErrors(res.errors)
+        } else if (res.metrics) {
+            setMetrics(res.metrics)
         }
         setLoading(false)
     }
 
     useEffect(() => {
-        fetchRequest()
+        fetchRequest(0)
     }, [id]);
+
+    useEffect(() => {
+        if (warnings?.loading) {
+            fetchRequest(3)
+        }
+    }, [warnings]);
 
     const getMetricName = (name: string): string => {
         return name.replaceAll("_MS", "").replaceAll("_", " ")
@@ -99,41 +108,47 @@ export default function TimingAnalysisPanel({id}: {id: string}) {
                     <div className="w-full flex flex-col justify-center relative mt-16">
                         <Spinner size="lg" color="primary"/>
                     </div>
-                : metrics ?
-                    <>
-                        {Object.keys(metrics).length > 0 ?
-                            <>
-                                {Object.keys(metrics).map((k: string) => (
-                                    <div className="flex flex-col flex-nowrap my-6" key={k}>
-                                        <div className="absolute inset-x-0 text-2xl font-medium mt-28">
-                                            {metrics[k].category.toLowerCase() + '!'}
-                                        </div>
-                                        <div className="flex-auto">
-                                            <Speedometer data={metrics[k]}/>
-                                        </div>
-                                        <div className="text-neutral-300 font-bold text-2xl text-center text-wrap mx-5">
-                                            {getMetricName(k)}
-                                        </div>
-                                        <div className="text-gray-500 font-bold text-2xl text-center text-wrap mx-5">
-                                            {getMetricValue(metrics[k], k)}
-                                        </div>
+                    : metrics ?
+                        Object.keys(metrics).map((k: string) => (
+                            <div className="flex flex-col flex-nowrap my-6" key={k}>
+                                <div className="absolute inset-x-0 text-2xl font-medium mt-28">
+                                    {metrics[k].category.toLowerCase() + '!'}
+                                </div>
+                                <div className="flex-auto">
+                                    <Speedometer data={metrics[k]}/>
+                                </div>
+                                <div className="text-neutral-300 font-bold text-2xl text-center text-wrap mx-5">
+                                    {getMetricName(k)}
+                                </div>
+                                <div className="text-gray-500 font-bold text-2xl text-center text-wrap mx-5">
+                                    {getMetricValue(metrics[k], k)}
+                                </div>
+                            </div>
+                        ))
+                        : errors ?
+                            <div className="w-[calc(80dvw)]">
+                                {Object.keys(errors).map((k: string) => (
+                                    <div key={k} className="text-red-600 p-2 rounded-md break-words">
+                                        {errors[k]}
                                     </div>
                                 ))}
-                            </>
-                            :
-                            <div className="text-amber-600 p-5">No data available</div>
-                        }
-                    </>
-                    : errors ?
-                        <div className="w-[calc(80dvw)]">
-                            <div className="bg-red-200 text-red-900 p-2 rounded-md">Some errors occurred</div>
-                            {Object.keys(errors).map((field: string) => (
-                                <div key={field} className="text-red-700 p-2 rounded-md break-words">
-                                    {errors[field]}</div>
-                            ))}
-                        </div>
-                    :
-                    <></>
+                            </div>
+                            : warnings &&
+                            <div className="w-[calc(80dvw)]">
+                                {Object.keys(warnings).map((k: string) => (
+                                    <div key={k}>
+                                        {k === 'loading' ?
+                                            <div className="w-full flex flex-col justify-center relative my-16">
+                                                <Spinner size="lg" color="primary"/>
+                                            </div>
+                                            :
+                                            <div className="text-amber-700 p-2 rounded-md break-words">
+                                                {warnings[k]}
+                                            </div>
+                                        }
+                                    </div>
+                                ))}
+                            </div>
                 }
             </div>
         </div>

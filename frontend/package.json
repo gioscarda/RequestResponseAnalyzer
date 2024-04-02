@@ -20,7 +20,7 @@
     "ua-parser-js": "^1.0.37"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.12.2",
     "@types/react": "^18",
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^18",
