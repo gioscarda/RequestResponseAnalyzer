@@ -17,7 +17,7 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Read environment from .env file
-environ.Env.read_env(BASE_DIR.joinpath('.env'))
+environ.Env.read_env(BASE_DIR.joinpath('example.env'))
 env = environ.Env()
 
 # Quick-start development settings - unsuitable for production
