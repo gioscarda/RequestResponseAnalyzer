@@ -8,11 +8,14 @@ services:
     container_name: postgres_db
     restart: always
     ports:
-      - 5432:5432
+      - 5433:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
     env_file:
       - postgres/.env
+    command: "postgres -c config_file=/etc/postgresql/postgresql.conf && postgres -c hba_file=/etc/postgresql/pg_hba.conf"
 
   # DB PgAdmin
   pgadmin4:
