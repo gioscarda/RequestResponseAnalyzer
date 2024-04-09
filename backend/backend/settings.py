@@ -172,6 +172,6 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': env.str('DEFAULT_THROTTLE_RATES', default='100/day')
+        'anon': env.str('DEFAULT_THROTTLE_RATES', default='10/day')
     }
 }

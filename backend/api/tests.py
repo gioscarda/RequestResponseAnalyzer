@@ -124,21 +124,26 @@ class SecurityAPITests(APITestCase):
     """ Testing security in APIs endpoints """
 
     def test_csrf_protection(self):
+        """ Ensure the CSRF protection is enabled """
         # Obtain a CSRF token.
-        # response = self.client.get('/api')
-        # self.assertEqual(response.status_code, http_status.HTTP_200_OK)
-        # csrftoken = response.cookies['csrftoken']
-        # # Interact with the API.
-        # data = {'method': 'GET', 'url': 'https://mail.google.com/mail/u/0/#inbox'}
-        # response = self.client.post('/api/HTTP/', data, format='json', headers={'X-CSRFToken': csrftoken})
-        # self.assertEqual(response.status_code, http_status.HTTP_200_OK)
-        pass
-
-    def test_cors_protection(self):
-        pass
+        get_token_response = self.client.get('/api/HTTP/get_csrf_token/')
+        self.assertEqual(get_token_response.status_code, http_status.HTTP_200_OK)
+        self.assertIn('csrftoken', get_token_response.cookies)
+        csrftoken = get_token_response.cookies['csrftoken']
+        self.assertTrue(csrftoken is not None and csrftoken != '')
+        # Interact with the API.
+        data = {'method': 'GET', 'url': 'https://mail.google.com/mail/u/0/#inbox'}
+        create_response = self.client.post(
+            '/api/HTTP/', data, format='json', headers={'X-CSRFToken': csrftoken.value}, enforce_csrf_checks=True
+        )
+        self.assertEqual(create_response.status_code, http_status.HTTP_201_CREATED)
+        # TODO
 
     def test_ddos_protection(self):
+        """ Ensure protection from DDOS attacks is enabled """
+        # TODO
         pass
 
-    def test_anonymous_users_protection(self):
-        pass
+    def test_throttling(self):
+        """ Ensure throttling is enabled """
+        # TODO
