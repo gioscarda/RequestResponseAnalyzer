@@ -7,8 +7,6 @@ WORKDIR /app/frontend
 
 COPY .. .
 
-RUN echo $(ls .)
-
 RUN npm install
 
 ENTRYPOINT ["sh", "/app/frontend/docker/entrypoint.sh"]

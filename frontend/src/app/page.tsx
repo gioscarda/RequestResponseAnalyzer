@@ -1,12 +1,12 @@
 "use client";
 
-import {Suspense, useState} from "react";
+import {useEffect, useState} from "react";
 import ResponseDetails from "@/components/response-details";
 import ResponseStatus from "@/components/response-status";
 import RequestForm from "@/components/request-form";
 import Share from "@/components/share";
 import TimingAnalysisPanel from "@/components/timing-analysis-panel";
-import {sendRequest} from "@/actions/api-actions";
+import {sendRequest, getCsrfToken} from "@/actions/api-actions";
 import {isMobileDevice} from "@/libs/device";
 
 export default function Home() {
@@ -33,6 +33,11 @@ export default function Home() {
             setTimeout(() => setErrors(undefined), 5000)
         }
     }
+
+    useEffect(() => {
+        // Retrieve the csrftoken and set the cookie
+        getCsrfToken()
+    }, []);
 
     return (
         <main className="flex flex-col h-[calc(100dvh)] items-center px-[calc(10dvw)] pt-[calc(5dvh)] pb-[calc(15dvh)]

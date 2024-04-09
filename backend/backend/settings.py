@@ -140,27 +140,34 @@ if not DEBUG:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_CORS_ALLOWED_ORIGINS = [
-    "https://localhost:3000",
-    "https://0.0.0.0:3000",
-    "https://127.0.0.1:3000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=DEFAULT_CORS_ALLOWED_ORIGINS)
+CORS_EXPOSE_HEADERS = ['Accept', 'Content-Type', 'HTTP_X_CSRFTOKEN']
+CORS_ALLOW_CREDENTIALS = True
 
-X_FRAME_OPTIONS = "DENY"
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False  # Set to True in production (requires HTTPS)
 
 DEFAULT_CSRF_TRUSTED_ORIGINS = [
-    "https://localhost:3000",
-    "https://0.0.0.0:3000",
-    "https://127.0.0.1:3000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=DEFAULT_CSRF_TRUSTED_ORIGINS)
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+CSRF_COOKIE_NAME = 'csrftoken'
 
 GOOGLE_API_KEY = env.str('GOOGLE_API_KEY', default='my-google-key')
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api.authentication.SessionCSRFAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'EXCEPTION_HANDLER': 'api.exceptions.api_exception_handler',
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle'
     ],
